@@ -2,12 +2,23 @@
 
 import sys
 
+LDI = 0b10000010
+PRN = 0b01000111 # Print
+HLT = 0b00000001 # Halt
+ADD = 0b10100000 # Add
+SUB = 0b10100001 # Subtract
+MUL = 0b10100010 # Multiply
+DIV = 0b10100011 # Divide
+
 class CPU:
     """Main CPU class."""
 
     def __init__(self):
         """Construct a new CPU."""
-        pass
+        self.ram = [0] * 256
+        self.reg = [0] * 8
+        self.pc = 0
+        self.running = True
 
     def load(self):
         """Load a program into memory."""
@@ -36,7 +47,12 @@ class CPU:
 
         if op == "ADD":
             self.reg[reg_a] += self.reg[reg_b]
-        #elif op == "SUB": etc
+        elif op == "SUB":
+            self.reg[reg_a] -= self.reg[reg_b]
+        elif op == "MUL":
+            self.reg[reg_a] *= self.reg[reg_b]
+        elif op == "DIV":
+            self.reg[reg_a] /= self.reg[reg_b]
         else:
             raise Exception("Unsupported ALU operation")
 
