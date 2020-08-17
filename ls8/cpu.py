@@ -20,6 +20,12 @@ class CPU:
         self.pc = 0
         self.running = True
 
+    def ram_read(self, address):
+        return self.ram[address]
+
+    def ram_write(self, address, value):
+        self.ram[address] = value 
+
     def load(self):
         """Load a program into memory."""
 
@@ -78,4 +84,20 @@ class CPU:
 
     def run(self):
         """Run the CPU."""
-        pass
+        while self.running == True:
+            instruction_register = self.ram[self.pc]
+            if instruction_register == LDI:
+                reg_num = self.ram[self.pc + 1]
+                value = self.ram[self.pc + 2]
+                self.reg[reg_num] = value
+                self.pc += 3
+            elif instruction_register == PRN:
+                reg_num = self.ram[self.pc + 1]
+                print("Print num: ", self.reg[reg_num])
+                self.pc += 2
+            elif instruction_register == HLT:
+                self.running == False
+                self.pc += 1
+            else:
+                print(f'unknown register {instruction_register} at address {self.pc}')
+                sys.exit(1)
