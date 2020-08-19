@@ -9,6 +9,9 @@ ADD = 0b10100000 # Add
 SUB = 0b10100001 # Subtract
 MUL = 0b10100010 # Multiply
 DIV = 0b10100011 # Divide
+PUSH = 0b01000101 # Stack Push
+POP = 0b01000110 # Stack Pop
+
 
 class CPU:
     """Main CPU class."""
@@ -19,6 +22,7 @@ class CPU:
         self.reg = [0] * 8
         self.pc = 0
         self.running = True
+        self.sp = 7
         
 
     def ram_read(self, address):
@@ -126,6 +130,20 @@ class CPU:
                 value = self.ram[self.pc + 2]
                 self.reg[reg_num] *= self.reg[value]
                 self.pc += 3
+
+            elif instruction_register == PUSH:
+                self.sp -= 1
+                reg_num = self.ram[self.pc + 1]
+                value = self.reg[reg_num]
+                self.ram[self.sp] = value
+                self.pc += 2
+
+            elif instruction_register == POP:
+                value = self.ram[self.sp]
+                self.reg[self.ram[self.pc + 1]] = value
+                self.sp += 1
+                self.pc += 2
+
 
             else:
                 print(f'unknown register {instruction_register} at address {self.pc}')
