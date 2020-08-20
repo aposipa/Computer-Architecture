@@ -11,6 +11,8 @@ MUL = 0b10100010 # Multiply
 DIV = 0b10100011 # Divide
 PUSH = 0b01000101 # Stack Push
 POP = 0b01000110 # Stack Pop
+CALL = 0b01010000 # Call stack
+RET = 0b00010001 # Ret
 
 
 class CPU:
@@ -23,6 +25,7 @@ class CPU:
         self.pc = 0
         self.running = True
         self.sp = 7
+        
         
 
     def ram_read(self, address):
@@ -143,6 +146,33 @@ class CPU:
                 self.reg[self.ram[self.pc + 1]] = value
                 self.sp += 1
                 self.pc += 2
+
+            elif instruction_register == CALL:
+                return_address = self.pc +2
+                self.reg[self.sp] -= 1
+                self.ram[self.reg[self.sp]] = return_address
+                reg_num = self.ram[self.pc + 1]
+                value = self.reg[reg_num]
+                self.pc = value
+
+            elif instruction_register == RET:
+                return_address = self.ram[self.reg[self.sp]]
+                self.reg[self.sp] += 1
+                self.pc = return_address
+
+            elif instruction_register == ADD:
+                op_a = self.ram[self.pc + 1]
+                op_b = self.ram[self.pc + 2]
+                self.alu("ADD", op_a, op_b)
+                self.pc +=3
+
+            # elif instruction_register == MUL:
+            #     op_a = self.ram[self.pc + 1]
+            #     op_b = self.ram[self.pc + 2]
+            #     self.alu("MUL", op_a, op_b)
+            #     self.pc +=3
+
+
 
 
             else:
